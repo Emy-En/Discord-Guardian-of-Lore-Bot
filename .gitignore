@@ -1,5 +1,7 @@
-#Bot token fileS
+#Bot token file
 token.txt
+
+.idea
 
 # Compiled class file
 *.class
