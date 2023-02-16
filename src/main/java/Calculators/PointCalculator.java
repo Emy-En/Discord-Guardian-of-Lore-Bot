@@ -45,7 +45,7 @@ public class PointCalculator {
         String[] tableStr = message.split(" ");
 
         if (tableStr.length > 6){
-            return("Too much numbers in there, please keep it between 1 and 6!");
+            return("`"+message+"`  :Too much numbers in there, please keep it between 1 and 6!");
         }
         else {
             int[] tableInt = new int[tableStr.length];
@@ -66,7 +66,7 @@ public class PointCalculator {
                 return "`"+message+"` is worth " + answer + " points!";
             }
             else{
-                return("Please keep your numbers between 3 and 18 included");
+                return("`"+message+"` : Please keep your numbers between 3 and 18 included");
             }
         }
 
