@@ -26,10 +26,17 @@ public class PointCalculator {
         if (m.find()) {
             //Computing answer
             int answer = 0;
-            //To identify the cases where there is a roll less than 7
 
-            for (int i = 1; i <= 6; i++) {
-                answer += CONVERSION[Integer.parseInt(m.group(i)) - 3];
+            /*
+            Adding to the answer variable the individual point buy values found thanks to the regular expression
+            2 errors can happen here : NumberFormatException when parsing and IndexOutOfBoundsException when converting
+             */
+            try{
+                for (int i = 1; i <= 6; i++) {
+                    answer += CONVERSION[Integer.parseInt(m.group(i)) - 3];
+                }
+            }catch(Exception e){
+                return ("Error in computing the point buy value");
             }
 
             return "This is worth " + answer + " points!";

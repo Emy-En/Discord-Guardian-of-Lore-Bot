@@ -31,12 +31,12 @@ public class PointBuyHandler extends ListenerAdapter {
         if (event.getAuthor().getId().equals("572301609305112596")) {
 
             //Regex to find Dice Maiden messages who are related to stat rolling
-            Pattern r = Pattern.compile("6 \\dd6 [k3]{01}");
+            //The pattern captures dice rolls in a '6 3d6' or '6 4d6 k3' format
+            Pattern r = Pattern.compile("6 [34]d6 [k3]?");
             Matcher m = r.matcher(event.getMessage().getContentRaw());
 
             // If the message is stat-rolling-related, then send a message
             if (m.find()) {
-
                 event.getChannel()
                         .sendMessage(PointCalculator.pointBuyFromDM(event.getMessage().getContentRaw()))
                         .setMessageReference(event.getMessageId())
