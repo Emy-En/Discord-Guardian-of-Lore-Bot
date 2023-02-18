@@ -1,7 +1,10 @@
 #Bot token file
 token.txt
-
+password.txt
+out
 .idea
+resources
+target
 
 # Compiled class file
 *.class

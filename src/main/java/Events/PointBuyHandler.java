@@ -16,9 +16,7 @@ public class PointBuyHandler extends ListenerAdapter {
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("point")) {
 
-            if (event.getOption("rolls") != null) {
-                event.reply(PointCalculator.pointBuyFromCommand(event.getOption("rolls").getAsString())).queue();
-            }
+            event.reply(PointCalculator.pointBuyFromCommand(event.getOption("rolls").getAsString())).queue();
         }
     }
 
