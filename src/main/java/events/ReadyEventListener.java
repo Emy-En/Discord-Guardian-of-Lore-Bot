@@ -1,4 +1,4 @@
-package Events;
+package events;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;

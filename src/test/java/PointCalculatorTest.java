@@ -1,7 +1,5 @@
-import Calculators.PointCalculator;
+import calculators.PointCalculator;
 import org.junit.jupiter.api.Test;
-
-import Calculators.PointCalculator.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,5 +1,6 @@
-package Events;
+package events;
 
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -7,6 +8,8 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
+import bot.LoreBot;
 
 
 public class ShutDownEventListener extends ListenerAdapter {
@@ -25,6 +28,14 @@ public class ShutDownEventListener extends ListenerAdapter {
                 OptionMapping optionMapping = event.getOption("code");
 
                 if (event.getOption("code").getAsString().equals(password)) {
+
+                    //This part allows to send a message in a specific channel to know when the bot is turned off
+                    TextChannel textChannel = LoreBot.getJDA().getTextChannelById("1075904923276951623");
+                    if(textChannel.canTalk()) {
+                        textChannel.sendMessage("The bot is shutting down!").queue();
+                    }
+
+
                     event.reply("Good bye!").queue();
                     System.exit(1);
                 } else {
@@ -33,6 +44,12 @@ public class ShutDownEventListener extends ListenerAdapter {
 
             }
         } catch (IOException e) {
+            //This part allows to send a message in a specific channel to know when the bot is turned off
+            TextChannel textChannel = LoreBot.getJDA().getTextChannelById("1075904923276951623");
+            if(textChannel.canTalk()) {
+                textChannel.sendMessage("The bot is shutting down!").queue();
+            }
+
             event.reply("I have forgotten the password anyway, so bye bye!").queue();
             System.exit(1);
         }

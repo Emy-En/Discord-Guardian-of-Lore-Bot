@@ -1,14 +1,23 @@
+package bot;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import Events.*;
+import events.*;
 
 import java.io.*;
 
 public class LoreBot {
 
+    //Making the jda an attribute allows to access it from other classes
+    private static JDA jda;
+
+    public static JDA getJDA() {
+        return jda;
+    }
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
@@ -20,7 +29,7 @@ public class LoreBot {
             JDABuilder jdaBuilder = JDABuilder.createDefault(TOKEN);
 
             //Creates connexion
-            JDA jda = jdaBuilder
+            jda = jdaBuilder
                     .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES)
                     .addEventListeners(new PointBuyHandler(), new ReadyEventListener(),new ShutDownEventListener())
                     .build()
@@ -37,6 +46,12 @@ public class LoreBot {
                     .addOption(OptionType.STRING, "code", "Code to shutdown bot", false)
                     .setGuildOnly(true)
                     .queue();
+
+            //This part allows to send a message in a specific channel to know when the bot is turned on
+            TextChannel textChannel = jda.getTextChannelById("1075904923276951623");
+            if(textChannel.canTalk()) {
+                textChannel.sendMessage("The bot has been turned on!").queue();
+            }
 
 
         }catch(FileNotFoundException f){
