@@ -48,7 +48,7 @@ public class LoreBot {
                     .queue();
 
             //This part allows to send a message in a specific channel to know when the bot is turned on
-            TextChannel textChannel = jda.getTextChannelById("1075904923276951623");
+            TextChannel textChannel = jda.getTextChannelById("1076598009762156705");
             if(textChannel.canTalk()) {
                 textChannel.sendMessage("The bot has been turned on!").queue();
             }
