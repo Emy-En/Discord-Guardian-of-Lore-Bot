@@ -28,7 +28,7 @@ public class PathfinderWikiScraping {
         }
     }
 
-
+    //Returns true if the page exists and is not a "Page not found" page
     public static boolean doesPageExist(String url) {
         try{
             //If the page doesn't exist, there is an error, and we return false
@@ -54,20 +54,18 @@ public class PathfinderWikiScraping {
     public static String queryFromCommand(String query) {
         String queryUrl = pfWikiUrlGenerator(query);
 
-        //The link works without this, but a space in the link makes discord not recognizing it
-
         boolean pageExists = doesPageExist(queryUrl);
 
         if(pageExists){
             //if the query worked, then return the query for it to be sent
 
             //Replacement of spaces for it to be recognized as link by discord
-            return "Here is a link that matches your request!\n" + queryUrl.replace(" ", "%20");
+            return "Here is a link that matches your request!\n" + queryUrl;
 
         }else{
             //Else, sends a link to Google with the query
 
-            //This allows to get the part from the URL that is used for site: Google searches
+            //This allows to get the part from the URL that is used for 'site:' Google searches
             Pattern r = Pattern.compile("www\\.(.*?)/.*/");
             Matcher m = r.matcher(queryUrl);
 

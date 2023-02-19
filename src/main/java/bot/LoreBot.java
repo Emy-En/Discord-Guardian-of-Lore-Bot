@@ -1,9 +1,6 @@
 package bot;
 
-import events.PathfinderWikiEventListener;
-import events.PointBuyHandler;
-import events.ReadyEventListener;
-import events.ShutDownEventListener;
+import events.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -40,7 +37,8 @@ public class LoreBot {
                             new PointBuyHandler(),
                             new ReadyEventListener(),
                             new ShutDownEventListener(),
-                            new PathfinderWikiEventListener())
+                            new PathfinderWikiEventListener(),
+                            new GithubEventListener())
                     .build()
                     .awaitReady();
 
@@ -58,6 +56,10 @@ public class LoreBot {
 
             jda.upsertCommand("pfwiki", "Allows you to quickly have a look at spells and everything!")
                     .addOption(OptionType.STRING, "query", "What are you looking for?", true)
+                    .setGuildOnly(true)
+                    .queue();
+
+            jda.upsertCommand("git", "Here is the link to my Guthub project !")
                     .setGuildOnly(true)
                     .queue();
 
