@@ -1,6 +1,9 @@
-#Bot token file
+# Bot token, shutdown password and wiki URL
 token.txt
 password.txt
+pathfinderWikiUrl.txt
+
+# Directories
 out
 .idea
 resources

@@ -1,14 +1,19 @@
 package bot;
 
+import events.PathfinderWikiEventListener;
+import events.PointBuyHandler;
+import events.ReadyEventListener;
+import events.ShutDownEventListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import events.*;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class LoreBot {
 
@@ -31,7 +36,11 @@ public class LoreBot {
             //Creates connexion
             jda = jdaBuilder
                     .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES)
-                    .addEventListeners(new PointBuyHandler(), new ReadyEventListener(),new ShutDownEventListener())
+                    .addEventListeners(
+                            new PointBuyHandler(),
+                            new ReadyEventListener(),
+                            new ShutDownEventListener(),
+                            new PathfinderWikiEventListener())
                     .build()
                     .awaitReady();
 
@@ -43,7 +52,12 @@ public class LoreBot {
                     .queue();
 
             jda.upsertCommand("shutdown", "Allows you to shut down the bot, please do not use unless necessary!")
-                    .addOption(OptionType.STRING, "code", "Code to shutdown bot", false)
+                    .addOption(OptionType.STRING, "code", "Code to shutdown bot", true)
+                    .setGuildOnly(true)
+                    .queue();
+
+            jda.upsertCommand("pfwiki", "Allows you to quickly have a look at spells and everything!")
+                    .addOption(OptionType.STRING, "query", "What are you looking for?", true)
                     .setGuildOnly(true)
                     .queue();
 
@@ -53,14 +67,9 @@ public class LoreBot {
                 textChannel.sendMessage("The bot has been turned on!").queue();
             }
 
-
         }catch(FileNotFoundException f){
             System.out.println("Error : Token file not found");
         }
-
-
-
-
     }
 
 }
