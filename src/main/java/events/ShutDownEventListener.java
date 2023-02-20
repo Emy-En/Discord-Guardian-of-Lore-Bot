@@ -5,24 +5,31 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Objects;
 
 import bot.LoreBot;
 
 
 public class ShutDownEventListener extends ListenerAdapter{
 
-    //This method allows a user who is given the password to shut down the bot
-    //This will allow the inexperienced users I will share the .jar executable of the project
-    //To be able to host the bot on their computers without using a terminal
+    /*
+    This method allows a user who is given the password to shut down the bot
+    This will allow the inexperienced users I will share the .jar executable of the project
+    to be able to host the bot on their computers without using a terminal,
+    and also this will allow me to shut down the bot if it is being hosted by someone else
+     */
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         try {
             if (event.getName().equals("shutdown")) {
 
-                BufferedReader brpw = new BufferedReader(new FileReader("password.txt"));
-                String password = brpw.readLine();
+                //This file contains the password, it is accessible in the jar file
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        Objects.requireNonNull(LoreBot.class.getResourceAsStream("/password.txt"))));
+
+                String password = br.readLine();
 
                 if (event.getOption("code").getAsString().equals(password)) {
 

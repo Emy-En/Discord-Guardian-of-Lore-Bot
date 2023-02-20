@@ -1,15 +1,16 @@
 package calculators;
 
+import bot.LoreBot;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,8 +25,10 @@ public class PathfinderWikiScraping {
                 StandardCharsets.UTF_8).replaceAll("\\+", "%20");
 
         try {
-            //This file contains multiple URLs that could build working links
-            BufferedReader br = new BufferedReader(new FileReader("pathfinderWikiUrl.txt"));
+            //This file contains multiple URLs that could build working links, it is in the jar file
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    Objects.requireNonNull(LoreBot.class.getResourceAsStream("/pathfinderWikiUrl.txt"))));
+
             String pfWiki = br.readLine();
 
             //These will help knowing if the links built are good

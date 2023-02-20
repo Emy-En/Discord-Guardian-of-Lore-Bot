@@ -7,10 +7,8 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Objects;
 
 public class LoreBot {
 
@@ -26,7 +24,10 @@ public class LoreBot {
         //Gets token from token.txt file
         try{
 
-            BufferedReader br = new BufferedReader(new FileReader("token.txt"));
+            //The token file is a resource accessible in the jar file
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    Objects.requireNonNull(LoreBot.class.getResourceAsStream("/token.txt"))));
+
             final String TOKEN = br.readLine();
             JDABuilder jdaBuilder = JDABuilder.createDefault(TOKEN);
 
@@ -38,7 +39,8 @@ public class LoreBot {
                             new ReadyEventListener(),
                             new ShutDownEventListener(),
                             new PathfinderWikiEventListener(),
-                            new GithubEventListener())
+                            new GithubEventListener(),
+                            new FTWikiEventListener())
                     .build()
                     .awaitReady();
 
@@ -51,16 +53,21 @@ public class LoreBot {
 
             jda.upsertCommand("shutdown", "Allows you to shut down the bot, please do not use unless necessary!")
                     .addOption(OptionType.STRING, "code", "Code to shutdown bot", true)
-                    .setGuildOnly(true)
+                    .setGuildOnly(false)
                     .queue();
 
             jda.upsertCommand("pfwiki", "Allows you to quickly have a look at spells and everything!")
                     .addOption(OptionType.STRING, "query", "What are you looking for?", true)
-                    .setGuildOnly(true)
+                    .setGuildOnly(false)
                     .queue();
 
-            jda.upsertCommand("git", "Here is the link to my Guthub project !")
-                    .setGuildOnly(true)
+            jda.upsertCommand("git", "Here is the link to my Guthub project!")
+                    .setGuildOnly(false)
+                    .queue();
+
+            jda.upsertCommand("ftwiki", "Allows you to quickly have a look at our wiki! Typing 'w' gives the link to the homepage!")
+                    .addOption(OptionType.STRING, "query", "What are you looking for?", true)
+                    .setGuildOnly(false)
                     .queue();
 
             //This part allows to send a message in a specific channel to know when the bot is turned on
@@ -69,7 +76,7 @@ public class LoreBot {
                 textChannel.sendMessage("The bot has been turned on!").queue();
             }
 
-        }catch(FileNotFoundException f){
+        }catch(IOException | NullPointerException f){
             System.out.println("Error : Token file not found");
         }
     }
