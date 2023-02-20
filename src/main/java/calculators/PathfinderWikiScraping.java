@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -16,15 +17,46 @@ public class PathfinderWikiScraping {
 
     //Returns one link that could match an existing page correctly encoded
     public static String pfWikiUrlGenerator(String query) {
+
+        //The French PF wiki URLs don't change much from the queries but we need to encode it correctly
+        String queryEncoded = URLEncoder.encode(
+                query.replaceAll("'", ""),
+                StandardCharsets.UTF_8).replaceAll("\\+", "%20");
+
         try {
+            //This file contains multiple URLs that could build working links
             BufferedReader br = new BufferedReader(new FileReader("pathfinderWikiUrl.txt"));
-            final String pfWiki = br.readLine();
+            String pfWiki = br.readLine();
 
-            //The French PF wiki URLs don't change much from the queries but we need to encode it correctly
-            return pfWiki + URLEncoder.encode(query, StandardCharsets.UTF_8).replaceAll("\\+","%20") + ".ashx";
+            //These will help knowing if the links built are good
+            boolean pageExists = false;
+            String answer = "";
 
-        } catch (IOException e) {
-            return ("Error when generating URL");
+            //Looks for possible links that could work
+            while (pfWiki != null && !pageExists) {
+                answer = pfWiki.replace("query", queryEncoded);
+                pageExists = doesPageExist(answer);
+                pfWiki = br.readLine();
+            }
+
+            if (pageExists) {
+                return answer;
+            } else {
+                //Pattern that captures the site
+                Pattern r = Pattern.compile("www\\.(.*?)/");
+                Matcher m = r.matcher(answer);
+
+                if (m.find()) {
+                    //Returns link that searches on Google on the pathfinder wiki site
+                    return "https://www.google.com/search?q=site%3A" + m.group(1) + "+" + queryEncoded;
+                } else {
+                    //Error when generating link, returns search with query + keyword "Pathfinder"
+                    return "https://www.google.fr/search?q=pathfinder%20" + queryEncoded;
+                }
+            }
+        }catch(IOException e){
+            //Error when generating link, returns search with query + keyword "Pathfinder"
+            return "https://www.google.fr/search?q=pathfinder%20" + queryEncoded;
         }
     }
 
@@ -49,33 +81,26 @@ public class PathfinderWikiScraping {
     }
 
 
-
     //Tests if generated link is ok and sends a link depending on the answer
     public static String queryFromCommand(String query) {
+
+        //Generates a good link to the query, whether on the site or on google (if not found on site)
         String queryUrl = pfWikiUrlGenerator(query);
 
-        boolean pageExists = doesPageExist(queryUrl);
-
-        if(pageExists){
-            //if the query worked, then return the query for it to be sent
+        //The page is considered to exist if Google is not in its name
+        if (!queryUrl.contains("google.com")) {
+            //if the query worked correctly, then return the query for it to be sent
 
             //Replacement of spaces for it to be recognized as link by discord
             return "Here is a link that matches your request!\n" + queryUrl;
 
-        }else{
+        } else {
             //Else, sends a link to Google with the query
 
             //This allows to get the part from the URL that is used for 'site:' Google searches
-            Pattern r = Pattern.compile("www\\.(.*?)/.*/");
-            Matcher m = r.matcher(queryUrl);
-
-            if(m.find()){
-                return "I had trouble looking on the wiki so here is a Google search link:\nhttps://www.google.com/search?q=site+"
-                        +m.group(1)+"+"+query.replaceAll(" ","+");
-            }else{
-                return "Error when handling the request";
-            }
+            return "I had trouble looking on the wiki so here is a Google search link:\n" + queryUrl;
         }
     }
-
 }
+
+
